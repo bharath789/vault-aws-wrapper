@@ -1,0 +1,25 @@
+name: Custom Vault Action
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  custom_vault_job:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        
+      - name: Set up Vault
+        uses: hashicorp/vault-action@v2
+
+      - name: Run Custom Go Program
+        run: |
+          echo "Running custom logic..."
+          export ROLE_NAME=${{ inputs.role_name }}
+          cd vault_wrapper  # Assuming your Go program is in this directory
+          go build  # Compile the Go program
+          ./vault_wrapper "${{ matrix.role_name }}" # Run the compiled program
