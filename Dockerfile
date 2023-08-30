@@ -5,7 +5,7 @@ FROM golang:1.17-alpine
 COPY vault_wrapper/ .
 
 # Build the Go program
-RUN go build -o aws.go
+RUN go build -o vault_wrapper/aws.go
 
 # Command to run the application
-CMD ["./aws.go"]
+CMD ["./vault_wrapper/aws.go"]

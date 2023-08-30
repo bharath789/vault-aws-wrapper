@@ -50,3 +50,19 @@ func getSecretWithAWSAuthIAM() (string, error) {
 
     return value, nil
 }
+
+func main() {
+    if len(os.Args) < 2 {
+        fmt.Println("Usage: ./aws.go $ROLE_NAME")
+        return
+    }
+
+    secretValue, err := getSecretWithAWSAuthIAM()
+    if err != nil {
+        fmt.Printf("Error: %v\n", err)
+        return
+    }
+
+    // fmt.Println("Secret Value:", secretValue)
+    os.Setenv("GITHUB_OUTPUT", secretValue)
+}
