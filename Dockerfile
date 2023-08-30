@@ -8,7 +8,7 @@ WORKDIR /app
 COPY vault_wrapper/ .
 
 # Build the Go program
-RUN go build -o aws.go
+RUN go build -o /aws
 
-# Command to run the application
-CMD ["./aws.go"]
+# Code file to execute when the Docker container starts up
+ENTRYPOINT ["/aws"]
