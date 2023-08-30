@@ -12,7 +12,7 @@ import (
 // Fetches a key-value secret (kv-v2) after authenticating to Vault via AWS IAM,
 // one of two auth methods used to authenticate with AWS (the other is EC2 auth).
 func getSecretWithAWSAuthIAM() (string, error) {
-    role := os.Getenv("ROLE_NAME")
+    role := os.Args[1]
     config := vault.DefaultConfig() // modify for more granular configuration
 
     client, err := vault.NewClient(config)

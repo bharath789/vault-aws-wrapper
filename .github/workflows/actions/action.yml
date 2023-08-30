@@ -1,7 +1,0 @@
-name: 'Custom Vault Action'
-description: 'My custom Vault action'
-
-inputs:
-  role_name:
-    description: 'The role name for authentication'
-    required: true

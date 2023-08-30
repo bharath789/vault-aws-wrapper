@@ -5,3 +5,9 @@ inputs:
   role_name:
     description: 'The role name for authentication'
     required: true
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.role_name }}
