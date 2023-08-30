@@ -12,7 +12,7 @@ inputs:
     description: 'The method to use to authenticate with Vault.'
     default: 'aws'
     required: true
-   url:
+  url:
     description: 'The URL for the vault endpoint'
     required: true
 
