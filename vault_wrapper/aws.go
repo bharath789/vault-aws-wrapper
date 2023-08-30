@@ -52,10 +52,13 @@ func getSecretWithAWSAuthIAM() (string, error) {
 }
 
 func main() {
-    if len(os.Args) < 2 {
-        fmt.Println("Usage: ./aws.go $ROLE_NAME")
+    if len(os.Args) < 4 {
+        fmt.Println("Usage: ./aws.go $ROLE_NAME $VAULT_ADDR $VAULT_NAMESPACE")
         return
     }
+    // setting env namespace, url
+    os.Setenv("VAULT_ADDR", os.Args[3])
+    os.Setenv("VAULT_NAMESPACE", os.Args[2])
 
     secretValue, err := getSecretWithAWSAuthIAM()
     if err != nil {

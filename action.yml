@@ -5,9 +5,21 @@ inputs:
   role_name:
     description: 'The role name for authentication'
     required: true
+  namespace:
+    description: 'The Vault namespace from which to query secrets. Vault Enterprise only, unset by default'
+    required: false
+  method:
+    description: 'The method to use to authenticate with Vault.'
+    default: 'aws'
+    required: true
+   url:
+    description: 'The URL for the vault endpoint'
+    required: true
 
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.role_name }}
+    - ${{ inputs.namespace }}
+    - ${{ inputs.url }}
