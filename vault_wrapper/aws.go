@@ -43,7 +43,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
     if keyName != "" {
         secret, err := client.KVv2(path).Get(context.Background(), keyName)
     } else{
-        secret, err := client.KVv2("secret").Get(context.Background())
+        secret, err := client.KVv2(path).Get(context.Background())
     } 
     
     
