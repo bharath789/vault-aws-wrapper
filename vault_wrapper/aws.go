@@ -40,11 +40,17 @@ func getSecretWithAWSAuthIAM() (string, error) {
     fmt.Println("print secret data - %v" ,secretData)
     // add the secret logic fetch multiple secrets
     path, githubOutputVar, keyName := readSecretData()
+    
     if keyName != "" {
         fmt.Println("printing from if statement")
         secret, err := client.KVv2(path).Get(context.Background(), keyName)
-    } else{
-        secret := client.KVv2(path)
+        fmt.Println("printing the secret - %v" , secret)
+        value, ok := secret.Data["password"].(string)
+        if !ok {
+            return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
+        }
+    } else {
+        secret := client.KVv2(path).get()
     } 
     
     
@@ -54,10 +60,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
 
     // data map can contain more than one key-value pair,
     // in this case we're just grabbing one of them
-    value, ok := secret.Data["password"].(string)
-    if !ok {
-        return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
-    }
+    
 
     fmt.Println("printing the secret - %v" , secret)
 
