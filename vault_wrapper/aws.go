@@ -11,10 +11,6 @@ import (
 )
 
 func getSecretWithAWSAuthIAM() (string, error) {
-    var (
-        secret string
-        value string
-    )
     role := os.Args[1]
     config := vault.DefaultConfig() // modify for more granular configuration
 
@@ -61,14 +57,14 @@ func getSecretWithAWSAuthIAM() (string, error) {
     // data map can contain more than one key-value pair,
     // in this case we're just grabbing one of them
     
-    secret, err := client.KVv2(path).Get(context.Background(), keyName)
+    secret, err := client.KVv2("secret").Get(context.Background(), path)
     fmt.Println("printing the secret - %v" , secret)
-    value, ok := secret.Data["password"].(string)
-    if !ok {
-        return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
-    }
+    // value, ok := secret.Data["password"].(string)
+    // if !ok {
+    //     return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
+    // }
 
-    return value, nil
+    return secret.Data, nil
 }
 
 func main() {
@@ -91,7 +87,7 @@ func main() {
 }
 
 func readSecretData() (string, string, string){
-	secretData := "secrets/dev/kvv2/example foo | MY_PASSWORD"
+	// secretData := "secrets/dev/kvv2/example foo | MY_PASSWORD"
 
     var (
         secretsPath string
