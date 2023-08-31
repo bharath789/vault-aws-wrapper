@@ -9,8 +9,6 @@ import (
     auth "github.com/hashicorp/vault/api/auth/aws"
 )
 
-// Fetches a key-value secret (kv-v2) after authenticating to Vault via AWS IAM,
-// one of two auth methods used to authenticate with AWS (the other is EC2 auth).
 func getSecretWithAWSAuthIAM() (string, error) {
     role := os.Args[1]
     config := vault.DefaultConfig() // modify for more granular configuration
@@ -21,7 +19,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
     }
 
     awsAuth, err := auth.NewAWSAuth(
-        auth.WithRole(role), // if not provided, Vault will fall back on looking for a role with the IAM role name if you're using the iam auth type, or the EC2 instance's AMI id if using the ec2 auth type
+        auth.WithRole(role), 
     )
     if err != nil {
         return "", fmt.Errorf("unable to initialize AWS auth method: %w", err)
@@ -35,7 +33,11 @@ func getSecretWithAWSAuthIAM() (string, error) {
         return "", fmt.Errorf("no auth info was returned after login")
     }
 
-    // get secret from the default mount path for KV v2 in dev mode, "secret"
+    
+    
+    secretData := os.Args[5]
+    fmt.Println("print secret data - %v" ,secretData)
+    // add the secret logic fetch multiple secrets 
     secret, err := client.KVv2("secret").Get(context.Background(), "creds")
     if err != nil {
         return "", fmt.Errorf("unable to read secret: %w", err)
@@ -52,7 +54,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
 }
 
 func main() {
-    if len(os.Args) < 4 {
+    if len(os.Args) < 5 {
         fmt.Println("Usage: ./aws.go $ROLE_NAME $VAULT_ADDR $VAULT_NAMESPACE")
         return
     }

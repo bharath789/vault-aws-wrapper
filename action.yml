@@ -7,13 +7,16 @@ inputs:
     required: true
   namespace:
     description: 'The Vault namespace from which to query secrets. Vault Enterprise only, unset by default'
-    required: false
+    required: true
   method:
     description: 'The method to use to authenticate with Vault.'
     default: 'aws'
-    required: true
+    required: false
   url:
     description: 'The URL for the vault endpoint'
+    required: true
+  secrets:
+    description: 'A semicolon-separated list of secrets to retrieve. These will automatically be converted to environmental variable keys. See README for more details'
     required: true
 
 runs:
@@ -23,3 +26,4 @@ runs:
     - ${{ inputs.role_name }}
     - ${{ inputs.namespace }}
     - ${{ inputs.url }}
+    - ${{ inputs.secrets}}
