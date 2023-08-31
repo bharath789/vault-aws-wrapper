@@ -39,11 +39,11 @@ func getSecretWithAWSAuthIAM() (string, error) {
     secretData := os.Args[5]
     fmt.Println("print secret data - %v" ,secretData)
     // add the secret logic fetch multiple secrets
-    path, githubOutputVar, keyName :=readSecretData()
+    path, githubOutputVar, keyName := readSecretData()
     if keyName != "" {
         secret, err := client.KVv2(path).Get(context.Background(), keyName)
     } else{
-        secret, err := client.KVv2(path).Get(context.Background())
+        secret, err := client.KVv2(path)
     } 
     
     
