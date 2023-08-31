@@ -48,8 +48,6 @@ func getSecretWithAWSAuthIAM() (string, error) {
     if keyName != "" {
         fmt.Println("printing from if statement")
         secret, err := client.KVv2(path).Get(context.Background(), keyName)
-        fmt.Println("printing the secret - %v" , secret)
-        value, ok := secret.Data["password"].(string)
         if !ok {
             return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
         }
@@ -67,6 +65,10 @@ func getSecretWithAWSAuthIAM() (string, error) {
     
 
     fmt.Println("printing the secret - %v" , secret)
+    value, ok := secret.Data["password"].(string)
+    if !ok {
+        return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
+    }
 
     return value, nil
 }
