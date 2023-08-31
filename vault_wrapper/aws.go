@@ -4,6 +4,7 @@ import (
     "context"
     "fmt"
     "os"
+    "strings"
 
     vault "github.com/hashicorp/vault/api"
     auth "github.com/hashicorp/vault/api/auth/aws"
@@ -37,8 +38,15 @@ func getSecretWithAWSAuthIAM() (string, error) {
     
     secretData := os.Args[5]
     fmt.Println("print secret data - %v" ,secretData)
-    // add the secret logic fetch multiple secrets 
-    secret, err := client.KVv2("secret").Get(context.Background(), "creds")
+    // add the secret logic fetch multiple secrets
+    path, githubOutputVar, keyName :=readSecretData()
+    if keyName != "" {
+        secret, err := client.KVv2(path).Get(context.Background(), keyName)
+    } else{
+        secret, err := client.KVv2("secret").Get(context.Background())
+    } 
+    
+    
     if err != nil {
         return "", fmt.Errorf("unable to read secret: %w", err)
     }
@@ -54,7 +62,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
 }
 
 func main() {
-    if len(os.Args) < 5 {
+    if len(os.Args) < 4 {
         fmt.Println("Usage: ./aws.go $ROLE_NAME $VAULT_ADDR $VAULT_NAMESPACE")
         return
     }
@@ -70,4 +78,41 @@ func main() {
 
     // fmt.Println("Secret Value:", secretValue)
     os.Setenv("GITHUB_OUTPUT", secretValue)
+}
+
+func readSecretData() {
+	secretData := "secrets/dev/kvv2/example foo | MY_PASSWORD"
+
+    var (
+        secretsPath string
+        variable string
+        key string
+    )
+
+	// Splitting the string by ' '
+	parts := strings.Split(secretData, " ")
+	if len(parts) >= 4 {
+		secretsPath := parts[0]
+		fmt.Println("Secrets Directory:", secretsPath)
+	} else {
+        secretsPath := parts[0]
+        fmt.Println("Secrets Directory:", secretsPath)
+    }
+
+	// Splitting the string by ' | '
+	variables := strings.Split(secretData, " | ")
+	if len(variables) >= 2 {
+		variable := variables[1]
+		fmt.Println("Password:", variable)
+	}
+
+	// Splitting the second part by space to get 'foo'
+	secondPart := strings.TrimSpace(variables[0])
+	secondPartParts := strings.Split(secondPart, " ")
+	if len(secondPartParts) >= 2 {
+		key := secondPartParts[1]
+		fmt.Println("Foo:", key)
+	}
+
+    return secretsPath, key, variable 
 }
