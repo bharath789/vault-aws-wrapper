@@ -54,10 +54,10 @@ func getSecretWithAWSAuthIAM() (string, error) {
 
     // data map can contain more than one key-value pair,
     // in this case we're just grabbing one of them
-    // value, ok := secret.Data["password"].(string)
-    // if !ok {
-    //     return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
-    // }
+    value, ok := secret.Data["password"].(string)
+    if !ok {
+        return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
+    }
 
     fmt.Println("printing the secret - %v" , secret)
 
