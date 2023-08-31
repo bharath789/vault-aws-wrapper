@@ -42,7 +42,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
     path, githubOutputVar, keyName := readSecretData()
     if keyName != "" {
         fmt.Println("printing from if statement")
-        secret := client.KVv2(path).Get(context.Background(), keyName)
+        secret, err := client.KVv2(path).Get(context.Background(), keyName)
     } else{
         secret := client.KVv2(path)
     } 
