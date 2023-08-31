@@ -11,6 +11,10 @@ import (
 )
 
 func getSecretWithAWSAuthIAM() (string, error) {
+    var (
+        secret string
+        value string
+    )
     role := os.Args[1]
     config := vault.DefaultConfig() // modify for more granular configuration
 
@@ -50,7 +54,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
             return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
         }
     } else {
-        secret := client.KVv2(path).get()
+        secret := client.KVv2(path).Get()
     } 
     
     
