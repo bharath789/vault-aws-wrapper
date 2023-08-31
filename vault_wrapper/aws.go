@@ -41,22 +41,25 @@ func getSecretWithAWSAuthIAM() (string, error) {
     // add the secret logic fetch multiple secrets
     path, githubOutputVar, keyName := readSecretData()
     if keyName != "" {
-        secret, err := client.KVv2(path).Get(context.Background(), keyName)
+        fmt.Println("printing from if statement")
+        secret := client.KVv2(path).Get(context.Background(), keyName)
     } else{
-        secret, err := client.KVv2(path)
+        secret := client.KVv2(path)
     } 
     
     
-    if err != nil {
-        return "", fmt.Errorf("unable to read secret: %w", err)
-    }
+    // if err != nil {
+    //     return "", fmt.Errorf("unable to read secret: %w", err)
+    // }
 
     // data map can contain more than one key-value pair,
     // in this case we're just grabbing one of them
-    value, ok := secret.Data["password"].(string)
-    if !ok {
-        return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
-    }
+    // value, ok := secret.Data["password"].(string)
+    // if !ok {
+    //     return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
+    // }
+
+    fmt.Println("printing the secret - %v" , secret)
 
     return value, nil
 }
@@ -80,7 +83,7 @@ func main() {
     os.Setenv("GITHUB_OUTPUT", secretValue)
 }
 
-func readSecretData() {
+func readSecretData() (string, string, string){
 	secretData := "secrets/dev/kvv2/example foo | MY_PASSWORD"
 
     var (
