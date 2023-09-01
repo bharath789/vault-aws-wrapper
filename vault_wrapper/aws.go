@@ -59,6 +59,8 @@ func getSecretWithAWSAuthIAM() (string, error) {
     
     secret, err := client.KVv2("secret").Get(context.Background(), path)
     fmt.Println("printing the secret - %v" , secret)
+    fmt.Println("printing githubOutputVar - %v", githubOutputVar)
+    fmt.Println("printing keyName - %v", keyName)
     // value, ok := secret.Data["password"].(string)
     // if !ok {
     //     return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
