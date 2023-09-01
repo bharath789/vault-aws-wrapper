@@ -58,9 +58,9 @@ func getSecretWithAWSAuthIAM() (string, error) {
     // in this case we're just grabbing one of them
     
     secret, err := client.KVv2("secret").Get(context.Background(), path)
-    fmt.Println("printing the secret - %v" , secret)
-    fmt.Println("printing githubOutputVar - %v", githubOutputVar)
-    fmt.Println("printing keyName - %v", keyName)
+    fmt.Printf("printing the secret: %v" , secret)
+    fmt.Printf("printing githubOutputVar: %v", githubOutputVar)
+    fmt.Printf("printing keyName: %v", keyName)
     // value, ok := secret.Data["password"].(string)
     // if !ok {
     //     return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
@@ -88,7 +88,7 @@ func main() {
     os.Setenv("GITHUB_OUTPUT", secretValue)
 }
 
-func readSecretData(secretData string) (string, string, string){
+func readSecretData(data string) (string, string, string){
 	// secretData := "secrets/dev/kvv2/example foo | MY_PASSWORD"
 
     var (
@@ -96,21 +96,21 @@ func readSecretData(secretData string) (string, string, string){
         variable string
         key string
     )
-
+    fmt.Printf("priting input secret inside the func: %v ", data)
 	// Splitting the string by ' '
 	parts := strings.Split(secretData, " ")
 	if len(parts) >= 4 {
-		secretsPath := parts[0]
+		secretsPath = parts[0]
 		fmt.Println("Secrets Directory:", secretsPath)
 	} else {
-        secretsPath := parts[0]
+        secretsPath = parts[0]
         fmt.Println("Secrets Directory:", secretsPath)
     }
 
 	// Splitting the string by ' | '
-	variables := strings.Split(secretData, " | ")
+	variables = strings.Split(secretData, " | ")
 	if len(variables) >= 2 {
-		variable := variables[1]
+		variable = variables[1]
 		fmt.Println("Password:", variable)
 	}
 
@@ -118,7 +118,7 @@ func readSecretData(secretData string) (string, string, string){
 	secondPart := strings.TrimSpace(variables[0])
 	secondPartParts := strings.Split(secondPart, " ")
 	if len(secondPartParts) >= 2 {
-		key := secondPartParts[1]
+		key = secondPartParts[1]
 		fmt.Println("Foo:", key)
 	}
 
