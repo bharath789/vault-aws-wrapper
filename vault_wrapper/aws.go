@@ -39,7 +39,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
     secretData := os.Args[5]
     fmt.Println("print secret data - %v" ,secretData)
     // add the secret logic fetch multiple secrets
-    path, githubOutputVar, keyName := readSecretData()
+    path, githubOutputVar, keyName := readSecretData(secretData)
     
     // if keyName != "" {
     //     fmt.Println("printing from if statement")
@@ -64,7 +64,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
     //     return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
     // }
 
-    return secret.Data, nil
+    return "secret", nil
 }
 
 func main() {
@@ -86,7 +86,7 @@ func main() {
     os.Setenv("GITHUB_OUTPUT", secretValue)
 }
 
-func readSecretData() (string, string, string){
+func readSecretData(secretData string) (string, string, string){
 	// secretData := "secrets/dev/kvv2/example foo | MY_PASSWORD"
 
     var (
