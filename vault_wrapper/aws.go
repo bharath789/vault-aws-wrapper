@@ -98,7 +98,7 @@ func readSecretData(data string) (string, string, string){
     )
     fmt.Printf("priting input secret inside the func: %v ", data)
 	// Splitting the string by ' '
-	parts := strings.Split(secretData, " ")
+	parts := strings.Split(data, " ")
 	if len(parts) >= 4 {
 		secretsPath = parts[0]
 		fmt.Println("Secrets Directory:", secretsPath)
@@ -108,7 +108,7 @@ func readSecretData(data string) (string, string, string){
     }
 
 	// Splitting the string by ' | '
-	variables = strings.Split(secretData, " | ")
+	variables := strings.Split(data, " | ")
 	if len(variables) >= 2 {
 		variable = variables[1]
 		fmt.Println("Password:", variable)
