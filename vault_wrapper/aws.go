@@ -57,10 +57,11 @@ func getSecretWithAWSAuthIAM() (string, error) {
     // data map can contain more than one key-value pair,
     // in this case we're just grabbing one of them
     
-    secret, err := client.KVv2("secret").Get(context.Background(), path)
-    fmt.Printf("printing the secret: %v" , secret)
-    fmt.Printf("printing githubOutputVar: %v", githubOutputVar)
-    fmt.Printf("printing keyName: %v", keyName)
+    secret, err := client.KVv2("secrets").Get(context.Background(), path)
+    fmt.Printf("printing the secret: %v\n" , secret)
+    fmt.Printf("printng the path: %v\n", path)
+    fmt.Printf("printing githubOutputVar: %v\n", githubOutputVar)
+    fmt.Printf("printing keyName: %v\n", keyName)
     // value, ok := secret.Data["password"].(string)
     // if !ok {
     //     return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data["password"], secret.Data["password"])
