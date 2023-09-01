@@ -36,7 +36,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
 
     
     
-    secretData := os.Args[5]
+    secretData := os.Args[4]
     fmt.Println("print secret data - %v" ,secretData)
     // add the secret logic fetch multiple secrets
     path, githubOutputVar, keyName := readSecretData(secretData)
