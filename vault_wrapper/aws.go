@@ -48,7 +48,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
     fmt.Printf("printing githubOutputVar: %v\n", githubOutputVar)
     fmt.Printf("printing keyName: %v\n", keyName)
     fmt.Printf("printing secret Data - %#v\n", secret.Data[keyName])
-    value, ok := secret.Data[keyName]
+    value, ok := secret.Data[keyName].(string)
     if !ok {
         return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data[keyName], secret.Data[keyName])
     }
@@ -75,7 +75,7 @@ func main() {
     os.Setenv("GITHUB_OUTPUT", secretValue)
 }
 
-func readSecretData(data string) (string, string, string){
+func readSecretData(data string) (string, string, string, string){
 	// data := "dev/kvv2/example foo | MY_PASSWORD"
 
     var (
@@ -114,7 +114,7 @@ func readSecretData(data string) (string, string, string){
     return mountPathInput, secretsPath, key, variable 
 }
 
-func formatSeretPath(fmtPath string) (string){
+func formatSeretPath(fmtPath string) (string, string){
     var (
         fmtPathData string
         lastPosition int
