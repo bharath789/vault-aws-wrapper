@@ -59,7 +59,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
     // os.Setenv("GITHUB_OUTPUT", secretValue)
     // fmt.Println(os.Getenv("GITHUB_OUTPUT"))
 
-    return secretValue, nil
+    return value, nil
 }
 
 func main() {
