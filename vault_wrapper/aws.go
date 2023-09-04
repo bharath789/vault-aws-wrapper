@@ -53,11 +53,10 @@ func getSecretWithAWSAuthIAM() (string, error) {
         return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data[keyName], secret.Data[keyName])
     }
     fmt.Println("Secret Value:", value)
-    // secretValue := keyName + "=" + value
-    // fmt.Println("printing secretVaule : ", secretValue)
-    fmt.Println(fmt.Sprintf(`::set-output name=%s::%s`, keyName, value))
-    // os.Setenv("GITHUB_OUTPUT", secretValue)
-    // fmt.Println(os.Getenv("GITHUB_OUTPUT"))
+    secretValue := keyName + "=" + value
+    fmt.Println("printing secretVaule : ", secretValue)
+    // fmt.Println(fmt.Sprintf(`::set-output name=%s::%s`, keyName, value))
+    os.Setenv("GITHUB_OUTPUT", secretValue)
 
     return value, nil
 }
