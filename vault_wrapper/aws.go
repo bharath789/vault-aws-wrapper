@@ -39,16 +39,17 @@ func getSecretWithAWSAuthIAM() (string, error) {
     secretData := os.Args[4]
     fmt.Println("print secret data - %v" ,secretData)
     // add the secret logic fetch multiple secrets
-    path, githubOutputVar, keyName := readSecretData(secretData)
+    mountPath, path, keyName, githubOutputVar := readSecretData(secretData)
     
-    secret, err := client.KVv2("dev/kvv2").Get(context.Background(), "example")
+    secret, err := client.KVv2(mountPath).Get(context.Background(), path)
     fmt.Printf("printing the secret: %v\n" , secret)
+    fmt.Printf("printng the mountPath: %v\n", mountPath)
     fmt.Printf("printng the path: %v\n", path)
     fmt.Printf("printing githubOutputVar: %v\n", githubOutputVar)
     fmt.Printf("printing keyName: %v\n", keyName)
-    fmt.Printf("printing secret Data - %v\n", secret[keyName])
-    value := secret[keyName]
-    if !value {
+    fmt.Printf("printing secret Data - %#v\n", secret.Data[keyName])
+    value, ok := secret.Data[keyName]
+    if !ok {
         return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data[keyName], secret.Data[keyName])
     }
 
@@ -79,7 +80,7 @@ func readSecretData(data string) (string, string, string){
 
     var (
         secretsPath string
-        secretsPathSplit string
+        mountPathInput string
         variable string
         key string
     )
@@ -87,12 +88,12 @@ func readSecretData(data string) (string, string, string){
 	parts := strings.Split(data, " ")
 	if len(parts) >= 4 {
         secretsPath = parts[0]
-        secretsPathSplit = formatSeretPath(secretsPath)
-        fmt.Println("Secrets Directory:", secretsPathSplit)	
+        mountPathInput, secretsPath = formatSeretPath(secretsPath)
+        fmt.Println("Secrets Directory:", mountPathInput)	
 	} else {
         secretsPath = parts[0]
-        secretsPathSplit = formatSeretPath(secretsPath)
-        fmt.Println("Secrets Directory:", secretsPathSplit)
+        mountPathInput, secretsPath = formatSeretPath(secretsPath)
+        fmt.Println("Secrets Directory:", mountPathInput)
     }
 
 	// Splitting the string by ' | '
@@ -110,15 +111,19 @@ func readSecretData(data string) (string, string, string){
 		fmt.Println("key:", key)
 	}
 
-    return secretsPathSplit, key, variable 
+    return mountPathInput, secretsPath, key, variable 
 }
 
 func formatSeretPath(fmtPath string) (string){
-    var fmtPathData string
+    var (
+        fmtPathData string
+        lastPosition int
+    )
     secretsPathNew := strings.Split(fmtPath, "/")
     
     for i :=0; i < (len(secretsPathNew) - 1); i++ {
         fmtPathData += secretsPathNew[i] + "/"
+        lastPosition = i + 1
     }
-    return fmtPathData
+    return fmtPathData, secretsPathNew[lastPosition]
 }
