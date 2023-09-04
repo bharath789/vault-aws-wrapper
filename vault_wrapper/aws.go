@@ -74,8 +74,7 @@ func main() {
         fmt.Printf("Error: %v\n", err)
         return
     }
-
-    
+    fmt.Printf(output) 
 }
 
 func readSecretData(data string) (string, string, string, string){
