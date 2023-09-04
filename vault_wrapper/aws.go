@@ -55,7 +55,8 @@ func getSecretWithAWSAuthIAM() (string, error) {
     fmt.Println("Secret Value:", value)
     secretValue := keyName + "=" + value
     fmt.Println("printing secretVaule : ", secretValue)
-    fmt.Println(fmt.Sprintf(`name=%s::%s >> $GITHUB_OUTPUT`, keyName, value))
+    // fmt.Println(fmt.Sprintf(`name=%s::%s >> $GITHUB_OUTPUT`, keyName, value))
+    os.Setenv("GITHUB_OUTPUT", secretValue)
     fmt.Println(os.Getenv("GITHUB_OUTPUT"))
 
     return value, nil
