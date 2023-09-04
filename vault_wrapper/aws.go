@@ -10,7 +10,7 @@ import (
     auth "github.com/hashicorp/vault/api/auth/aws"
 )
 
-func getSecretWithAWSAuthIAM() () {
+func getSecretWithAWSAuthIAM() (string, error) {
     role := os.Args[1]
     config := vault.DefaultConfig() // modify for more granular configuration
 
@@ -54,9 +54,10 @@ func getSecretWithAWSAuthIAM() () {
     }
     fmt.Println("Secret Value:", value)
     secretValue := "%s=%s", keyName, value
+    fmt.Printf("printing secretVaule : ", secretValue)
     os.Setenv("GITHUB_OUTPUT", secretValue)
 
-    return
+    return secretValue, nil
 }
 
 func main() {
@@ -68,13 +69,11 @@ func main() {
     os.Setenv("VAULT_ADDR", os.Args[3])
     os.Setenv("VAULT_NAMESPACE", os.Args[2])
 
-    getSecretWithAWSAuthIAM()
-
-    // secretValue, err := getSecretWithAWSAuthIAM()
-    // if err != nil {
-    //     fmt.Printf("Error: %v\n", err)
-    //     return
-    // }
+    output, err := getSecretWithAWSAuthIAM()
+    if err != nil {
+        fmt.Printf("Error: %v\n", err)
+        return
+    }
 
     
 }
