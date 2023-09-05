@@ -4,6 +4,7 @@ import (
     "context"
     "fmt"
     "os"
+    "os/exec"
     "strings"
 
     vault "github.com/hashicorp/vault/api"
