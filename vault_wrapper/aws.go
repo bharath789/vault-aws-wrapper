@@ -54,11 +54,13 @@ func getSecretWithAWSAuthIAM() (string, error) {
         return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data[keyName], secret.Data[keyName])
     }
     fmt.Println("Secret Value:", value)
-    secretValue := keyName + "=" + value
+    if githubOutputVar != nil{
+        secretValue := githubOutputVar + "=" + value
+    }else{
+        secretValue := keyName + "=" + value
+    }
     fmt.Println("printing secretVaule : ", secretValue)
-    // fmt.Println(fmt.Sprintf(`name=%s::%s >> $GITHUB_OUTPUT`, keyName, value))
     os.Setenv("secretValue", secretValue)
-    // fmt.Println(os.Getenv("GITHUB_OUTPUT"))
 
     // Retrieve the value of the secretValue environment variable
 	commandToRun := fmt.Sprintf(`echo "$secretValue" >> "$GITHUB_OUTPUT"`)
@@ -69,8 +71,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
     if err != nil {
         fmt.Println("could not run command: ", err)
     }
-    fmt.Println("Output: ", string(out))
-
+    fmt.Printf("Output: %v", out)
 
     return value, nil
 }
