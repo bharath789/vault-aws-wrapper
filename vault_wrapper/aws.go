@@ -60,8 +60,12 @@ func getSecretWithAWSAuthIAM() (string, error) {
     os.Setenv("secretValue", secretValue)
     // fmt.Println(os.Getenv("GITHUB_OUTPUT"))
 
-    cmd := exec.Command("$secretValue", ">>", "$GITHUB_OUTPUT")
-    out, err := cmd.Output()
+    // Retrieve the value of the secretValue environment variable
+	commandToRun := fmt.Sprintf(`echo "$secretValue" >> "$GITHUB_OUTPUT"`)
+
+	// Execute the command using /bin/sh as the shell
+	cmd := exec.Command("/bin/sh", "-c", commandToRun)
+    out, err := cmd.CombinedOutput()
     if err != nil {
         fmt.Println("could not run command: ", err)
     }
