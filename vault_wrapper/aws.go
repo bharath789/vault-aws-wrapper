@@ -54,10 +54,11 @@ func getSecretWithAWSAuthIAM() (string, error) {
         return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data[keyName], secret.Data[keyName])
     }
     fmt.Println("Secret Value:", value)
+    var secretValue string
     if githubOutputVar != "" {
-        secretValue := githubOutputVar + "=" + value
+        secretValue = githubOutputVar + "=" + value
     }else{
-        secretValue := keyName + "=" + value
+        secretValue = keyName + "=" + value
     }
     fmt.Println("printing secretVaule : ", secretValue)
     os.Setenv("secretValue", secretValue)
