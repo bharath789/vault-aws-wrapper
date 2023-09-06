@@ -60,8 +60,12 @@ github.com/hashicorp/vault v1.14.2 h1:wgJSMMGlBpJcUR/L7F7/OkK8E3/nzXo5mCtJtNh6pI
 github.com/hashicorp/vault v1.14.2/go.mod h1:9JtUETMikpprXcdwRssyxRVKyON/9jZ2fAcwQPt5ItE=
 github.com/hashicorp/vault/api v1.9.2 h1:YjkZLJ7K3inKgMZ0wzCU9OHqc+UqMQyXsPXnf3Cl2as=
 github.com/hashicorp/vault/api v1.9.2/go.mod h1:jo5Y/ET+hNyz+JnKDt8XLAdKs+AM0G5W0Vp1IrFI8N8=
+github.com/hashicorp/vault/api v1.10.0 h1:/US7sIjWN6Imp4o/Rj1Ce2Nr5bki/AXi9vAW3p2tOJQ=
+github.com/hashicorp/vault/api v1.10.0/go.mod h1:jo5Y/ET+hNyz+JnKDt8XLAdKs+AM0G5W0Vp1IrFI8N8=
 github.com/hashicorp/vault/api/auth/aws v0.4.1 h1:+Pl2oYNrAMerz1ntBIqqe91mBp6wTZ++XJDCekxZWEI=
 github.com/hashicorp/vault/api/auth/aws v0.4.1/go.mod h1:f9mgfZF+gLtrro+e2cheYQ3VpTaaQfEOAaUNGGVu76A=
+github.com/hashicorp/vault/api/auth/aws v0.5.0 h1:IKf0W3A2tXEtw9KrooslBWw72Ld63V+fUHkkSmm+2T0=
+github.com/hashicorp/vault/api/auth/aws v0.5.0/go.mod h1:U2Y6Ci/kDsUkDTzUXq0OKG2/GQkEtqzQjTY1YYSQFnk=
 github.com/jmespath/go-jmespath v0.3.0/go.mod h1:9QtRXoHjLGCJ5IBSaohpXITPlowMeeYCZ7fLUTSywik=
 github.com/jmespath/go-jmespath v0.4.0 h1:BEgLn5cpjn8UN1mAw4NjwDrS35OdebyEtFe+9YPoQUg=
 github.com/jmespath/go-jmespath v0.4.0/go.mod h1:T8mJZnbsbmF+m6zOOFylbeCJqk5+pHWvzYPziyZiYoo=
