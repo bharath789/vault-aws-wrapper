@@ -4,6 +4,7 @@ import (
     "context"
     "fmt"
     "os"
+    "errors"
     "os/exec"
     "strings"
 
@@ -56,17 +57,13 @@ func getSecretWithAWSAuthIAM() (string, error) {
     fmt.Println("Secret Value:", value)
     var secretValue string
     if githubOutputVar != "" {
-        secretValue = githubOutputVar + "=" + value
+        secretValue = strings.TrimSpace(githubOutputVar) + "=" + value
     }else{
         secretValue = keyName + "=" + value
     }
     fmt.Println("printing secretVaule : ", secretValue)
     os.Setenv("secretValue", secretValue)
-
-    // Retrieve the value of the secretValue environment variable
 	commandToRun := fmt.Sprintf(`echo "$secretValue" >> "$GITHUB_OUTPUT"`)
-
-	// Execute the command using /bin/sh as the shell
 	cmd := exec.Command("/bin/sh", "-c", commandToRun)
     out, err := cmd.CombinedOutput()
     if err != nil {
@@ -79,8 +76,9 @@ func getSecretWithAWSAuthIAM() (string, error) {
 
 func main() {
     if len(os.Args) < 4 {
-        fmt.Println("Usage: ./aws.go $ROLE_NAME $VAULT_ADDR $VAULT_NAMESPACE")
-        return
+        error := errors.New("Usage: ./aws.go $ROLE_NAME $VAULT_ADDR $VAULT_NAMESPACE")
+        fmt.Println(error)
+        os.Exit(1)
     }
     // setting env namespace, url
     os.Setenv("VAULT_ADDR", os.Args[3])
@@ -89,7 +87,7 @@ func main() {
     output, err := getSecretWithAWSAuthIAM()
     if err != nil {
         fmt.Printf("Error: %v\n", err)
-        return
+        os.Exit(1)
     }
     fmt.Printf(output) 
 }
