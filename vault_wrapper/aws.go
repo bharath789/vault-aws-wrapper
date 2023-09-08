@@ -53,7 +53,7 @@ func getSecretWithAWSAuthIAM() (string, error) {
 		fmt.Println("fetching input", i+1, groupString)
 		mountPath, path, keyName, githubOutputVar := readSecretData(groupString)
 		fmt.Println(mountPath, path, keyName, githubOutputVar)
-        secret, err := client.KVv2("stage/kvv2").Get(context.Background(), "example")
+        secret, err := client.KVv2(mountPath).Get(context.Background(), path)
         fmt.Printf("printing the secret: %v\n" , secret)
         fmt.Printf("printng the mountPath: %v\n", mountPath)
         fmt.Printf("printng the path: %v\n", path)
