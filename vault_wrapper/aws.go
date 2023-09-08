@@ -37,7 +37,6 @@ func getSecretWithAWSAuthIAM() (string, error) {
     }    
     
     secretData := os.Args[4]
-    fmt.Println("print secret data - %v" ,secretData)
     parts := strings.Fields(secretData)
     // Grouping the elements into sets of four
 	var groupedData [][]string
@@ -52,26 +51,25 @@ func getSecretWithAWSAuthIAM() (string, error) {
 		groupString := strings.Join(group, " ")
 		fmt.Println("fetching input", i+1, groupString)
 		mountPath, path, keyName, githubOutputVar := readSecretData(groupString)
-		fmt.Println(mountPath, path, keyName, githubOutputVar)
         secret, err := client.KVv2(mountPath).Get(context.Background(), path)
-        fmt.Printf("printing the secret: %v\n" , secret)
-        fmt.Printf("printng the mountPath: %v\n", mountPath)
-        fmt.Printf("printng the path: %v\n", path)
-        fmt.Printf("printing githubOutputVar: %v\n", githubOutputVar)
-        fmt.Printf("printing keyName: %v\n", keyName)
-        fmt.Printf("printing secret Data - %#v\n", secret.Data[keyName])
+        
+        if secret == nil {
+            fmt.Println("unable to fetch secrets from the path:", mountPath+path, "please check your path and the role")
+            os.Exit(1)
+        }
+        
         value, ok := secret.Data[keyName].(string)
         if !ok {
             return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data[keyName], secret.Data[keyName])
         }
-        fmt.Println("Secret Value:", value)
+
         var secretValue string
         if githubOutputVar != "" {
             secretValue = strings.TrimSpace(githubOutputVar) + "=" + value
         }else{
             secretValue = keyName + "=" + value
         }
-        fmt.Println("printing secretVaule : ", secretValue)
+
         os.Setenv("secretValue", secretValue)
         commandToRun := fmt.Sprintf(`echo "$secretValue" >> "$GITHUB_OUTPUT"`)
         cmd := exec.Command("/bin/sh", "-c", commandToRun)
@@ -103,7 +101,6 @@ func main() {
 }
 
 func readSecretData(data string) (string, string, string, string){
-	// data := "dev/kvv2/example foo | MY_PASSWORD"
 
     var (
         secretsPath string
@@ -115,19 +112,16 @@ func readSecretData(data string) (string, string, string, string){
 	parts := strings.Split(data, " ")
 	if len(parts) >= 4 {
         secretsPath = parts[0]
-        mountPathInput, secretsPath = formatSeretPath(secretsPath)
-        fmt.Println("Secrets Directory:", mountPathInput)	
+        mountPathInput, secretsPath = formatSeretPath(secretsPath)	
 	} else {
         secretsPath = parts[0]
         mountPathInput, secretsPath = formatSeretPath(secretsPath)
-        fmt.Println("Secrets Directory:", mountPathInput)
     }
 
 	// Splitting the string by ' | '
 	variables := strings.Split(data, " | ")
 	if len(variables) >= 2 {
 		variable = variables[1]
-		fmt.Println("github variable:", variable)
 	}
 
 	// Splitting the second part by space to get 'key'
@@ -135,7 +129,6 @@ func readSecretData(data string) (string, string, string, string){
 	secondPartParts := strings.Split(secondPart, " ")
 	if len(secondPartParts) >= 2 {
 		key = secondPartParts[1]
-		fmt.Println("key:", key)
 	}
 
     return mountPathInput, secretsPath, key, variable 
