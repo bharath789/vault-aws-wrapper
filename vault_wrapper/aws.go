@@ -14,7 +14,7 @@ import (
 
 func getSecretWithAWSAuthIAM() (string, error) {
     role := os.Args[1]
-    config := vault.DefaultConfig() // modify for more granular configuration
+    config := vault.DefaultConfig()
 
     client, err := vault.NewClient(config)
     if err != nil {
@@ -34,44 +34,54 @@ func getSecretWithAWSAuthIAM() (string, error) {
     }
     if authInfo == nil {
         return "", fmt.Errorf("no auth info was returned after login")
-    }
-
-    
+    }    
     
     secretData := os.Args[4]
     fmt.Println("print secret data - %v" ,secretData)
-    // add the secret logic fetch multiple secrets
-    mountPath, path, keyName, githubOutputVar := readSecretData(secretData)
-    
-    secret, err := client.KVv2(mountPath).Get(context.Background(), path)
-    fmt.Printf("printing the secret: %v\n" , secret)
-    fmt.Printf("printng the mountPath: %v\n", mountPath)
-    fmt.Printf("printng the path: %v\n", path)
-    fmt.Printf("printing githubOutputVar: %v\n", githubOutputVar)
-    fmt.Printf("printing keyName: %v\n", keyName)
-    fmt.Printf("printing secret Data - %#v\n", secret.Data[keyName])
-    value, ok := secret.Data[keyName].(string)
-    if !ok {
-        return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data[keyName], secret.Data[keyName])
-    }
-    fmt.Println("Secret Value:", value)
-    var secretValue string
-    if githubOutputVar != "" {
-        secretValue = strings.TrimSpace(githubOutputVar) + "=" + value
-    }else{
-        secretValue = keyName + "=" + value
-    }
-    fmt.Println("printing secretVaule : ", secretValue)
-    os.Setenv("secretValue", secretValue)
-	commandToRun := fmt.Sprintf(`echo "$secretValue" >> "$GITHUB_OUTPUT"`)
-	cmd := exec.Command("/bin/sh", "-c", commandToRun)
-    out, err := cmd.CombinedOutput()
-    if err != nil {
-        fmt.Println("could not run command: ", err)
-    }
-    fmt.Printf("Output: %v", out)
-
-    return value, nil
+    parts := strings.Fields(secretData)
+    // Grouping the elements into sets of four
+	var groupedData [][]string
+	for i := 0; i < len(parts); i += 4 {
+		end := i + 4
+		if end > len(parts) {
+			end = len(parts)
+		}
+		groupedData = append(groupedData, parts[i:end])
+	}
+    for i, group := range groupedData {
+		groupString := strings.Join(group, " ")
+		fmt.Println("fetching input", i+1, groupString)
+		mountPath, path, keyName, githubOutputVar := readSecretData(groupString)
+		fmt.Println(mountPath, path, keyName, githubOutputVar)
+        secret, err := client.KVv2(mountPath).Get(context.Background(), path)
+        fmt.Printf("printing the secret: %v\n" , secret)
+        fmt.Printf("printng the mountPath: %v\n", mountPath)
+        fmt.Printf("printng the path: %v\n", path)
+        fmt.Printf("printing githubOutputVar: %v\n", githubOutputVar)
+        fmt.Printf("printing keyName: %v\n", keyName)
+        fmt.Printf("printing secret Data - %#v\n", secret.Data[keyName])
+        value, ok := secret.Data[keyName].(string)
+        if !ok {
+            return "", fmt.Errorf("value type assertion failed: %T %#v", secret.Data[keyName], secret.Data[keyName])
+        }
+        fmt.Println("Secret Value:", value)
+        var secretValue string
+        if githubOutputVar != "" {
+            secretValue = strings.TrimSpace(githubOutputVar) + "=" + value
+        }else{
+            secretValue = keyName + "=" + value
+        }
+        fmt.Println("printing secretVaule : ", secretValue)
+        os.Setenv("secretValue", secretValue)
+        commandToRun := fmt.Sprintf(`echo "$secretValue" >> "$GITHUB_OUTPUT"`)
+        cmd := exec.Command("/bin/sh", "-c", commandToRun)
+        out, err := cmd.CombinedOutput()
+        if err != nil {
+            fmt.Println("could not run command: ", err)
+        }
+        _ = out
+	}
+    return "Success", nil
 }
 
 func main() {
@@ -89,7 +99,7 @@ func main() {
         fmt.Printf("Error: %v\n", err)
         os.Exit(1)
     }
-    fmt.Printf(output) 
+    _ = output
 }
 
 func readSecretData(data string) (string, string, string, string){
